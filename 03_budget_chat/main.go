@@ -202,7 +202,6 @@ func handle(conn net.Conn, room *Room, connections *Connections) {
 		fmt.Println("Closing connection for: ", conn.RemoteAddr())
 		conn.Close()
 		u, err := connections.Get(&conn)
-		fmt.Println(u)
 		if err != nil {
 			fmt.Println(err)
 			return
