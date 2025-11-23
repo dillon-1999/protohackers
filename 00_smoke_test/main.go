@@ -7,10 +7,11 @@ import (
 	"os"
 )
 
-const PORT = "8899"
+var (
+	PORT = "8899"
+)
 
 func main() {
-
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%s", PORT))
 	if err != nil {
 		fmt.Println("Listen: ", err.Error())

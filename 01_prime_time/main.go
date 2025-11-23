@@ -27,11 +27,12 @@ type JsonResponse struct {
 	Prime  bool   `json:"prime"`
 }
 
+// We use Big Int due to the server
+// optionally testing with massive numbers
 type StrictBigInt struct {
 	Num *big.Int
 }
 
-// must be > 0
 func (s *StrictBigInt) UnmarshalJSON(data []byte) error {
 	if len(data) == 0 {
 		fmt.Println("data is of length 0")
@@ -74,12 +75,6 @@ func main() {
 	}
 }
 
-// malformed:
-// - method not isPrime
-// - err unmarshaling that isnt:
-//   - ErrNotPositiveInteger
-//
-// bad, but not malformed:
 func validatePayload(b []byte) (JsonPayload, error) {
 	var jp JsonPayload
 	err := json.Unmarshal(b, &jp)
@@ -94,16 +89,6 @@ func validatePayload(b []byte) (JsonPayload, error) {
 	}
 	return jp, err
 }
-
-/*
-problems:
-- cant read in as string, because i wont know the difference between "1" and 1
-  - "1" is invalid, but 1 would not be
-
-- cant read in as json.Number, same as above ^
-- cant read in as bit.Int, because it would drop the precision
-- can
-*/
 
 func handle(conn net.Conn) {
 	defer func() {
