@@ -125,14 +125,15 @@ func handle(conn net.Conn) {
 		fmt.Println("Closing connection: ", conn.RemoteAddr())
 		conn.Close()
 	}()
-	var records []Record
+	var rs RecordSet
 	buf := make([]byte, 9)
 	for {
 		// buffer big enough to grab the whole query
 		size, err := io.ReadFull(conn, buf)
-		fmt.Println(size)
 		if err != nil {
-			fmt.Println("Failed to ReadFull: ", err)
+			if err != io.EOF {
+				fmt.Println("Failed to ReadFull: ", err)
+			}
 			return
 		}
 		if size != 9 {
@@ -143,15 +144,22 @@ func handle(conn net.Conn) {
 		mt := buf[0]
 		b1 := convertI32Slice(buf[1:5])
 		b2 := convertI32Slice(buf[5:9])
+
 		switch mt {
 		case INSERT:
-			insert(b1, b2, &records)
+			insert(b1, b2, &rs.Records)
+			if rs.Sorted {
+				rs.Sorted = false
+			}
 		case QUERY:
 			// before you query, ensure it's sorted
-			sort.Slice(records, func(i, j int) bool {
-				return (records)[i].Timestamp < (records)[j].Timestamp
-			})
-			mean := query(b1, b2, records)
+			if !rs.Sorted {
+				sort.Slice(rs.Records, func(i, j int) bool {
+					return (rs.Records)[i].Timestamp < (rs.Records)[j].Timestamp
+				})
+				rs.Sorted = true
+			}
+			mean := query(b1, b2, rs.Records)
 			err = binary.Write(conn, binary.BigEndian, mean)
 			if err != nil {
 				fmt.Println("Error writing binary: ", err)
