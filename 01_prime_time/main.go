@@ -1,5 +1,6 @@
 package main
 
+// STATUS: Passed
 import (
 	"bufio"
 	"bytes"

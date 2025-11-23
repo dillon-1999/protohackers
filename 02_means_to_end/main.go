@@ -1,5 +1,6 @@
 package main
 
+// STATUS: Passed
 import (
 	"encoding/binary"
 	"fmt"
