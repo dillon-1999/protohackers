@@ -184,6 +184,7 @@ func main() {
 		fmt.Println("Failed to start server: ", err)
 		os.Exit(1)
 	}
+	defer ln.Close()
 	var room Room
 	var connections Connections
 	connections.ConMap = make(map[*net.Conn]User)

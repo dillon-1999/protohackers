@@ -65,7 +65,7 @@ func main() {
 		fmt.Println("Failed to listen to port: ", PORT)
 		os.Exit(1)
 	}
-
+	defer ln.Close()
 	for {
 		conn, err := ln.Accept()
 		if err != nil {

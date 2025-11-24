@@ -18,7 +18,7 @@ func main() {
 		fmt.Println("Listen: ", err.Error())
 		os.Exit(1)
 	}
-
+	defer ln.Close()
 	fmt.Printf("Listening on port: %s\n", PORT)
 	for {
 		conn, err := ln.Accept()

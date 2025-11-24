@@ -80,7 +80,7 @@ func main() {
 		fmt.Println("Could not listen to address")
 		os.Exit(1)
 	}
-
+	defer ln.Close()
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
