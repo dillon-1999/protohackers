@@ -45,7 +45,7 @@ expr: (^|\s)(7[[:alnum:]]{25,34})(\s|$)
 
 Only coin1 and coin3 will be caught, because they consume the spaces pre-pending
 and appending for coin2. So coin2 will be missed, because it doesnt meet the criteria,
-since it would look 'coins:<coin2> <coin3>' after <coin1> was replaced.
+since it would look 'coins: <tony-address><coin2> <coin3>' after <coin1> was replaced.
 */
 func replaceToken(data []byte) []byte {
 	re := regexp.MustCompile(`7[[:alnum:]]{25,34}`)
